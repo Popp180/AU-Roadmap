@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { login as loginApi, register as registerApi, getMe } from '@/api/auth';
+import { isDemoMode } from '@/api/axios';
+import { demoUser } from '@/demo/mockData';
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref(null);
-  const token = ref(localStorage.getItem('token') || null);
+  const user = ref(isDemoMode ? { ...demoUser } : null);
+  const token = ref(localStorage.getItem('token') || (isDemoMode ? 'portfolio-demo-session' : null));
   const loading = ref(false);
 
   const isAuthenticated = computed(() => !!token.value);
@@ -53,9 +55,9 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function logout() {
-    user.value = null;
-    token.value = null;
-    localStorage.removeItem('token');
+    user.value = isDemoMode ? { ...demoUser } : null;
+    token.value = isDemoMode ? 'portfolio-demo-session' : null;
+    if (!isDemoMode) localStorage.removeItem('token');
   }
 
   return {

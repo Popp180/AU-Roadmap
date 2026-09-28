@@ -1,8 +1,12 @@
 import axios from 'axios';
+import { demoApiAdapter } from '@/demo/mockApi';
+
+export const isDemoMode = import.meta.env.VITE_DEMO_MODE !== 'false';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 10000,
+  adapter: isDemoMode ? demoApiAdapter : undefined,
   headers: {
     'Content-Type': 'application/json',
   },
